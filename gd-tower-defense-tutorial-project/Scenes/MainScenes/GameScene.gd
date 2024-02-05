@@ -3,6 +3,7 @@ extends Node2D
 var map_node
 var build_type
 var build_location
+var build_tile
 var build_mode = false
 var build_valid = false
 
@@ -29,6 +30,7 @@ func update_tower_preview():
 		get_node("UI").update_tower_preview(tile_position, "ad54ff3c")
 		build_valid = true
 		build_location = tile_position
+		build_tile = current_tile
 	else:
 		get_node("UI").update_tower_preview(tile_position, "adff4545")
 		build_valid = false
@@ -49,5 +51,11 @@ func verify_and_build():
 	if build_valid:
 		var new_tower = load("res://Scenes/Turrets/"+ build_type +".tscn").instance()
 		new_tower.position = build_location
+		
+		# adds the created tower to the Turrets layer
 		map_node.get_node("Turrets").add_child(new_tower, true)
+		
+		# and this pushes the same tower to theexclusion layer so we can not
+		# build future towers on this cell
+		map_node.get_node("TowerExclusion").set_cellv(build_tile, 5)
 		
