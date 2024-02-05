@@ -1,5 +1,7 @@
 extends CanvasLayer
 
+var tower_range = 350
+
 func set_tower_preview(tower_type, mouse_position):
 	var drag_tower = load("res://Scenes/Turrets/"+tower_type+".tscn").instance()
 	drag_tower.set_name("DragTower")
@@ -7,10 +9,23 @@ func set_tower_preview(tower_type, mouse_position):
 	# can come up with this from the color picker, right side panel
 	drag_tower.modulate = Color("ad54ff3c") 
 	
+	# preparing the range transparent sprite
+	var range_texture = Sprite.new()
+	range_texture.set_name("RangeSprite")
+	range_texture.texture = load("res://Assets/UI/range_overlay.png")
+	range_texture.position = Vector2(32, 32);
+	var range_scale = tower_range / 600.0 # sprite texture is 600x600 px
+	range_texture.scale = Vector2(range_scale, range_scale)
+	range_texture.modulate = Color("ad54ff3c") 	
+	
+	# preparing the tower control
 	var control = Control.new()
 	control.add_child(drag_tower, true)
 	control.rect_position = mouse_position
 	control.set_name("TowerPreview")
+	control.add_child(range_texture, true)
+	
+	# pushing the control + sprite to the UI
 	add_child(control, true)
 	
 	# UI rendered back to front, top to bottom, so we're drawing 
@@ -24,3 +39,4 @@ func update_tower_preview(new_position, color):
 	# the color should change
 	if get_node("TowerPreview/DragTower").modulate != Color(color):
 		get_node("TowerPreview/DragTower").modulate = Color(color)
+		get_node("TowerPreview/RangeSprite").modulate = Color(color)
