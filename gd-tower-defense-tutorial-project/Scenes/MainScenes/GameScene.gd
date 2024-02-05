@@ -17,6 +17,10 @@ func _process(delta):
 		update_tower_preview()
 		
 func inititate_build_mode(tower_type):
+	if build_mode :
+		# allows changing towers while in build mode
+		cancel_build_mode()
+		
 	build_type = tower_type + "T1"
 	build_mode = true
 	get_node("UI").set_tower_preview(build_type, get_global_mouse_position())
@@ -45,6 +49,8 @@ func _unhandled_input(event):
 func cancel_build_mode():
 	build_mode = false
 	build_valid = false
+	# used to be queue_free() for best practice but this needs to be freed
+	# immediately, this frame, to avoid some null instance with the build mode
 	get_node("UI/TowerPreview").queue_free()
 	
 func verify_and_build():
