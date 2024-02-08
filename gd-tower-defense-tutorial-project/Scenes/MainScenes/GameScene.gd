@@ -90,6 +90,7 @@ func verify_and_build():
 		var new_tower = load("res://Scenes/Turrets/"+ build_type +".tscn").instance()
 		new_tower.position = build_location
 		new_tower.built = true
+		new_tower.type = build_type
 		
 		# adds the created tower to the Turrets layer
 		map_node.get_node("Turrets").add_child(new_tower, true)
