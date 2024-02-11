@@ -4,6 +4,7 @@ var enemy_array = []
 var built = false
 var enemy
 var type
+var category
 var ready = true
 
 func _ready():
@@ -15,7 +16,8 @@ func _ready():
 func _physics_process(delta):
 	if enemy_array.size() != 0 and built:
 		select_enemy()
-		turn()
+		if not get_node("AnimationPlayer").is_playing():
+			turn()
 		if ready:
 			fire()
 	else:
@@ -38,10 +40,20 @@ func select_enemy():
 
 func fire():
 	ready = false
+	if category == "Projectile":
+		fire_projectile()
+	elif category == "Missile":
+		fire_missile()
+		
 	enemy.on_hit(GameData.tower_data[type]["damage"])
 	yield(get_tree().create_timer(GameData.tower_data[type]["rof"]), "timeout")
 	ready = true
 
+func fire_projectile():
+	get_node("AnimationPlayer").play("Fire")
+	
+func fire_missile():
+	pass
 
 func _on_Range_body_entered(body):
 	enemy_array.append(body.get_parent())
